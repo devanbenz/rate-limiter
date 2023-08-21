@@ -1,5 +1,6 @@
 # Rate limiter system design (WIP
 
+```
                             ┌──────────┐
                             │          │
                             │  redis   ├──────────────┐
@@ -16,7 +17,7 @@
 └───────▲──────┘                              └───────┬────────┘
         │                                             │
         └─────────────────────────────────────────────┘
-
+```
 
 - Client makes request to webserver
 - Middleware layer will intercept the request object and increment "host":"req_count" in redis
