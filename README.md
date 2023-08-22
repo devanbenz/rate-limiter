@@ -1,4 +1,4 @@
-# Rate limiter system design (WIP
+# Rate limiter system design (WIP)
 
 ```
                             ┌──────────┐

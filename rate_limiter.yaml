@@ -1,0 +1,4 @@
+limit_type: Message
+limit_by: IP
+limit_count: 10
+limit_window: 60

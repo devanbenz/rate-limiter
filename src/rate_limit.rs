@@ -1,5 +1,8 @@
+use std::fs;
+
 use axum::http::StatusCode;
 use redis::{Client, RedisError};
+use serde::Deserialize;
 
 pub struct RateLimit {
     pub status_code: StatusCode,
@@ -8,10 +11,40 @@ pub struct RateLimit {
     pub time_to_reset: u32,
 }
 
+#[derive(Deserialize)]
+pub struct RateLimitConfig {
+    pub limit_type: LimitType,
+    pub limit_by: LimitBy,
+    pub limit: i32,
+    pub window: i32,
+}
+
+#[derive(Deserialize)]
+pub enum LimitType {
+    Message,
+    Auth,
+}
+
+#[derive(Deserialize)]
+pub enum LimitBy {
+    IP,
+    User,
+}
+
 pub fn init_redis_connection(redis_host: String) -> Result<Client, RedisError> {
     let connection = redis::Client::open(format!("redis://{}", redis_host))?;
 
     Ok(connection)
+}
+
+pub fn get_rate_limiter_configuration() -> RateLimitConfig {
+    let rate_limiter_config =
+        fs::read_to_string("rate_limiter.yaml").expect("Failed to read rate_limiter.yaml file.");
+
+    let rate_limiter_config: RateLimitConfig = serde_yaml::from_str(&rate_limiter_config)
+        .expect("Failed to parse rate_limiter.yaml file.");
+
+    rate_limiter_config
 }
 
 pub async fn rate_limit(limit_key: &str, client: Client) -> Result<RateLimit, RedisError> {

@@ -10,8 +10,8 @@ use axum::{
     Router,
 };
 use rate_limiter::{
-    cache::{init_redis_connection, rate_limit},
     configuration,
+    rate_limit::{init_redis_connection, rate_limit},
 };
 
 pub struct AppState {
